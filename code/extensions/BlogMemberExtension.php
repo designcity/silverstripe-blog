@@ -88,31 +88,28 @@ class BlogMemberExtension extends DataExtension
     {
         $fields->removeByName('URLSegment');
 
-        // Remove the automatically-generated posts tab.
+		if(Controller::curr()->class !== 'SecurityAdmin') {
+			$fields->removeFieldFromTab('Root', 'BlogPosts');
 
-		//We literally don't care about this shit for our websites
-		// The fact that it breaks makes it worse
-		//
+			// Construct a better posts tab.
 
-        //$fields->removeFieldFromTab('Root', 'BlogPosts');
+			Requirements::css(BLOGGER_DIR . '/css/cms.css');
+			Requirements::javascript(BLOGGER_DIR . '/js/cms.js');
 
-        //// Construct a better posts tab.
+			$tab = new Tab('BlogPosts', 'Blog Posts');
 
-        //Requirements::css(BLOGGER_DIR . '/css/cms.css');
-        //Requirements::javascript(BLOGGER_DIR . '/js/cms.js');
+			$gridField = new GridField(
+				'BlogPosts',
+				'Blog Posts',
+				$this->owner->BlogPosts(),
+				new GridFieldConfig_BlogPost()
+			);
 
-        //$tab = new Tab('BlogPosts', 'Blog Posts');
+			$tab->Fields()->add($gridField);
 
-        //$gridField = new GridField(
-        //    'BlogPosts',
-        //    'Blog Posts',
-        //    $this->owner->BlogPosts(),
-        //    new GridFieldConfig_BlogPost()
-        //);
+			$fields->addFieldToTab('Root', $tab);
+		}
 
-        //$tab->Fields()->add($gridField);
-
-        //$fields->addFieldToTab('Root', $tab);
 
         return $fields;
     }
